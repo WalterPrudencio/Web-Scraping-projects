@@ -70,6 +70,7 @@ def get_data(product_url, path):
                     break
     except:
         print("No hay commentarios sobre este producto")
+        print("There are no reviews about this product")
         driver.quit()
         sys.exit(1)
 
