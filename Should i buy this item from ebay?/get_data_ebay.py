@@ -6,7 +6,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
-import re
 import sys
 
 def get_data(product_url, path):
@@ -34,19 +33,9 @@ def get_data(product_url, path):
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//div[@id='s0-1-26-7-18-4-18[0]-x-feedback-detail-list-13-tabs-0']")))
         proceses_if = driver.find_element(By.XPATH, "//div[@id='s0-1-26-7-18-4-18[0]-x-feedback-detail-list-13-tabs-0']")
         if proceses_if:
-            #obtiene el id
-            item_id = re.search(r"/itm/(\d+)", product_url).group(1)
-
-            #obtenemos el usuario del vendedor
-            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'button.follow-ebay')))
-            button_html = driver.find_element(By.CSS_SELECTOR, 'button.follow-ebay').get_attribute('outerHTML')
-
-            match = re.search(r'aria-label="Guardar vendedor ([^"]+)"', button_html)
-            if match:
-                username = match.group(1)
-                username = username.lower().replace(" ", "_")
-
-            comments_url = f"https://www.ebay.com/fdbk/mweb_profile?fdbkType=FeedbackReceivedAsSeller&item_id={item_id}&username={username}&filter=feedback_page%3ARECEIVED_AS_SELLER&q={item_id}&sort=RELEVANCE"
+            WebDriverWait(driver,10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "a.fdbk-detail-list__tabbed-btn"))
+            fb_link = driver.find_element(By.CSS_SELECTOR, "a.fdbk-detail-list__tabbed-btn")
+            comments_url = fb_link.get_attribute("href")
             driver.get(comments_url)
             
             while True:
